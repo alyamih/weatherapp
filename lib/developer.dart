@@ -7,7 +7,7 @@ import 'main.dart';
 
 
 class DeveloperPage extends StatefulWidget {
-  const DeveloperPage({Key? key}) : super(key: key);
+  const DeveloperPage({Key key}) : super(key: key);
 
   @override
   State<DeveloperPage> createState() => _DeveloperPage();

@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class WeatherPage extends StatefulWidget {
-  const WeatherPage({Key? key}) : super(key: key);
+  const WeatherPage({Key key}) : super(key: key);
 
   @override
   _WeatherPageState createState() => _WeatherPageState();
@@ -23,15 +23,6 @@ class _WeatherPageState extends State<WeatherPage> {
 }
 
 
-fetchWeatherData(Client client, double lat, double lon) async {
-  final resp = await client.get(Uri.parse(
-      'https://api.openweathermap.org/data/2.5/onecall?lat=$lat&lon=$lon&units=metric&exclude=minutely,alerts&appid=a9ac1745bc8669b6800d1f8c1b49063f'));
-  final respFromJson = jsonDecode(resp.body);
-  // log(respFromJson[0].toString(), name: 'respFromJson');
-  // log(respFromJson.toString(), name: 'fetchWeatherData');
-  return respFromJson;
-}
-
 class Weather {
   var temp = 0;
   var pressure = 0.0;
@@ -40,7 +31,7 @@ class Weather {
   var dt = 0;
   var weatherType = 0;
 
-  Weather({required this.temp, required this.pressure, required this.humidity, required this.wind, required this.dt, required this.weatherType});
+  Weather({@required this.temp, @required this.pressure, @required this.humidity, @required this.wind, @required this.dt, @required this.weatherType});
 
 
 

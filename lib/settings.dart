@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({Key? key, required this.callback, required this.settings}) : super(key: key);
+  const SettingsPage({Key key, @required this.callback, @required this.settings}) : super(key: key);
   final Function callback;
   final Map settings;
 

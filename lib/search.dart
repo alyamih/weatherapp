@@ -51,7 +51,7 @@ class City {
     );
   }
 
-  City({required this.name, required this.country, required this.lat, required this.lon});
+  City({@required this.name, @required this.country, @required this.lat, @required this.lon});
 
   @override
   String toString() {
@@ -141,9 +141,9 @@ class _SearchPageState extends State<SearchPage> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       // log(snapshot.toString(), name: 'snapshot');
-                      List<City>? data = snapshot.data;
+                      List<City> data = snapshot.data;
                       // log(data.toString());
-                      if (data!.isNotEmpty) {
+                      if (data.isNotEmpty) {
                         return Container(
                           width: 360,
                           height: 640,
@@ -151,7 +151,7 @@ class _SearchPageState extends State<SearchPage> {
                             padding: const EdgeInsets.only(top: 10),
                             child: ListView.separated(
                               separatorBuilder: (context, index) =>
-                                  Divider(
+                                  const Divider(
                                     height: 1,
                                     color: Color(0xFFC6CEE3),
                                     thickness: 1,

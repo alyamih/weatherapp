@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({Key key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({Key key, @required this.title}) : super(key: key);
 
   final String title;
 
@@ -76,24 +77,19 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Map data={};
-func() {
-  setState(() async {
-    data = await fetchWeatherData(Client(), lat, lon);
-    current = Weather.fromJSON(data['current']);
-    log(data['hourly'].length.toString(), name: 'hourly');
-    hourly = data['hourly'].map<Weather>((el)=>Weather.fromJSON(el)).toList();
-  });
-}
+  Map<String, dynamic> data = {};
 
-  void initState(){
-    // Future.delayed(Duration.zero,
-    //     (){
-    //         setState(() async {
-    //           data = await fetchWeatherData(Client(), 60, 30);
-    //         });
-    //     }
-    // );
+
+  @override
+  void initState() {
+    fetchWeatherData(Client(), lat, lon);
+  }
+
+  fetchWeatherData(Client client, double lat, double lon) async {
+    final resp = await client.get(Uri.parse(
+        'https://api.openweathermap.org/data/2.5/onecall?lat=$lat&lon=$lon&units=metric&exclude=minutely,alerts&appid=aedb320f4e47c78885be8568a3bcb97b'));
+    final respFromJson = jsonDecode(resp.body);
+    return respFromJson;
   }
 
   Weather current = Weather(temp: 0, pressure: 0, humidity: 0, wind: 0, dt: 0, weatherType: 0);
@@ -102,9 +98,6 @@ func() {
 
   @override
   Widget build(BuildContext context) {
-    // log(data.toString());
-    // if (data.isNotEmpty){
-    // }
     return Scaffold(
         drawer: Drawer(
           child: SafeArea(
@@ -140,13 +133,13 @@ func() {
                   ),
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => FavoritesPage(
+                        builder: (_) => const FavoritesPage(
                               title: 'title',
                             )));
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.account_circle),
+                  leading: const Icon(Icons.account_circle),
                   title: Text(
                     'О приложении',
                     style: GoogleFonts.manrope(fontSize: 18),
@@ -161,21 +154,30 @@ func() {
           ),
         ),
         body: FutureBuilder(
-          future: Future.delayed(Duration(seconds: 0), () async {
-            return await fetchWeatherData(Client(), lat, lon);
-          }),
+          future: fetchWeatherData(Client(), lat, lon),
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done)
-              Future.delayed(Duration(seconds: 2), (){func();});
-            return Slide(
-            setSettings: setSettings,
-            settings: settings,
-            setCity: setCity,
-            name: name,
-            hourly: hourly,
-            daily: daily,
-            current: current,
-          );
+            if (snapshot.hasData) {
+              data = snapshot.data;
+              log(data.toString());
+              current = Weather.fromJSON(data['current']);
+              hourly = data['hourly'].map<Weather>((el)=>Weather.fromJSON(el)).toList();
+              return Slide(
+                setSettings: setSettings,
+                settings: settings,
+                setCity: setCity,
+                name: name,
+                hourly: hourly,
+                daily: daily,
+                current: current,
+              );
+            }
+            return Container(
+              child: const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.black38,
+                ),
+              ),
+            );
           },
         ),
       );
@@ -183,14 +185,14 @@ func() {
 }
 
 class Slide extends StatefulWidget {
-  Slide({Key? key,
-    required this.current,
-    required this.hourly,
-    required this.daily,
-    required this.settings,
-    required this.setSettings,
-    required this.setCity,
-    required this.name})
+  Slide({Key key,
+    @required this.current,
+    @required this.hourly,
+    @required this.daily,
+    @required this.settings,
+    @required this.setSettings,
+    @required this.setCity,
+    @required this.name})
       : super(key: key);
 
   Weather current;
@@ -210,8 +212,8 @@ class Slide extends StatefulWidget {
 }
 
 class _SlideState extends State<Slide> {
-  late bool isOpen = true;
-  late bool isClosed = false;
+  bool isOpen = true;
+  bool isClosed = false;
 
 
   @override
@@ -591,8 +593,8 @@ class _SlideState extends State<Slide> {
 
 class WeatherDetails extends StatelessWidget {
   const WeatherDetails({
-    Key? key,
-    required this.widgets,
+    Key key,
+    @required this.widgets,
   }) : super(key: key);
 
   final List<Widget> widgets;
