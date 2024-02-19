@@ -6,7 +6,7 @@ import 'main.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 
 class ForecastPage extends StatefulWidget {
-  const ForecastPage({Key? key, required this.callback, required this.settings})
+  const ForecastPage({Key key, @required this.callback, @required this.settings})
       : super(key: key);
   final Function callback;
   final Map settings;
